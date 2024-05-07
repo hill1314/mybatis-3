@@ -60,8 +60,10 @@ public class SqlSessionFactoryBuilder {
     try {
       //解析配置
       XMLConfigBuilder parser = new XMLConfigBuilder(reader, environment, properties);
+      //解析好的配置
       Configuration configuration = parser.parse();
       return build(configuration);
+
     } catch (Exception e) {
       throw ExceptionFactory.wrapException("Error building SqlSession.", e);
     } finally {
@@ -104,6 +106,7 @@ public class SqlSessionFactoryBuilder {
     try {
       XMLConfigBuilder parser = new XMLConfigBuilder(inputStream, environment, properties);
       return build(parser.parse());
+
     } catch (Exception e) {
       throw ExceptionFactory.wrapException("Error building SqlSession.", e);
     } finally {

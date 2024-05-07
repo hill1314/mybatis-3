@@ -37,6 +37,9 @@ import org.apache.ibatis.io.Resources;
  */
 public class TypeAliasRegistry {
 
+  /**
+   * 类型别名
+   */
   private final Map<String, Class<?>> typeAliases = new HashMap<>();
 
   public TypeAliasRegistry() {
@@ -163,7 +166,7 @@ public class TypeAliasRegistry {
     String key = alias.toLowerCase(Locale.ENGLISH);
     if (typeAliases.containsKey(key) && typeAliases.get(key) != null && !typeAliases.get(key).equals(value)) {
       throw new TypeException(
-          "The alias '" + alias + "' is already mapped to the value '" + typeAliases.get(key).getName() + "'.");
+        "The alias '" + alias + "' is already mapped to the value '" + typeAliases.get(key).getName() + "'.");
     }
     typeAliases.put(key, value);
   }
@@ -180,7 +183,6 @@ public class TypeAliasRegistry {
    * Gets the type aliases.
    *
    * @return the type aliases
-   *
    * @since 3.2.2
    */
   public Map<String, Class<?>> getTypeAliases() {
