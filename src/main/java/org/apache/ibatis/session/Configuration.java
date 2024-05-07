@@ -98,7 +98,10 @@ import org.apache.ibatis.type.TypeHandler;
 import org.apache.ibatis.type.TypeHandlerRegistry;
 
 /**
+ * mybatis配置
+ *
  * @author Clinton Begin
+ * @date 2024/05/07
  */
 public class Configuration {
 
@@ -188,7 +191,11 @@ public class Configuration {
     this.environment = environment;
   }
 
+  /**
+   * 配置 初始化
+   */
   public Configuration() {
+    //注册配置别名
     typeAliasRegistry.registerAlias("JDBC", JdbcTransactionFactory.class);
     typeAliasRegistry.registerAlias("MANAGED", ManagedTransactionFactory.class);
 

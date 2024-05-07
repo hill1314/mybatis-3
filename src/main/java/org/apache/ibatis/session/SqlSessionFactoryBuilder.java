@@ -1,5 +1,5 @@
 /*
- *    Copyright 2009-2023 the original author or authors.
+ *    Copyright 2009-2024 the original author or authors.
  *
  *    Licensed under the Apache License, Version 2.0 (the "License");
  *    you may not use this file except in compliance with the License.
@@ -44,10 +44,24 @@ public class SqlSessionFactoryBuilder {
     return build(reader, null, properties);
   }
 
+  /**
+   * 构建
+   *
+   * @param reader
+   *          读者
+   * @param environment
+   *          环境
+   * @param properties
+   *          特性
+   *
+   * @return {@link SqlSessionFactory}
+   */
   public SqlSessionFactory build(Reader reader, String environment, Properties properties) {
     try {
+      //解析配置
       XMLConfigBuilder parser = new XMLConfigBuilder(reader, environment, properties);
-      return build(parser.parse());
+      Configuration configuration = parser.parse();
+      return build(configuration);
     } catch (Exception e) {
       throw ExceptionFactory.wrapException("Error building SqlSession.", e);
     } finally {
@@ -74,6 +88,18 @@ public class SqlSessionFactoryBuilder {
     return build(inputStream, null, properties);
   }
 
+  /**
+   * 构建
+   *
+   * @param inputStream
+   *          输入流
+   * @param environment
+   *          环境
+   * @param properties
+   *          特性
+   *
+   * @return {@link SqlSessionFactory}
+   */
   public SqlSessionFactory build(InputStream inputStream, String environment, Properties properties) {
     try {
       XMLConfigBuilder parser = new XMLConfigBuilder(inputStream, environment, properties);

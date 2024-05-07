@@ -1,5 +1,5 @@
 /*
- *    Copyright 2009-2023 the original author or authors.
+ *    Copyright 2009-2024 the original author or authors.
  *
  *    Licensed under the Apache License, Version 2.0 (the "License");
  *    you may not use this file except in compliance with the License.
@@ -48,8 +48,12 @@ import org.apache.ibatis.transaction.TransactionFactory;
 import org.apache.ibatis.type.JdbcType;
 
 /**
+ * xml Config构造器
+ *
  * @author Clinton Begin
  * @author Kazuki Shimizu
+ *
+ * @date 2024/05/07
  */
 public class XMLConfigBuilder extends BaseBuilder {
 
@@ -94,6 +98,7 @@ public class XMLConfigBuilder extends BaseBuilder {
 
   private XMLConfigBuilder(Class<? extends Configuration> configClass, XPathParser parser, String environment,
       Properties props) {
+    //构建配置解析对象
     super(newConfig(configClass));
     ErrorContext.instance().resource("SQL Mapper Configuration");
     this.configuration.setVariables(props);
@@ -102,11 +107,17 @@ public class XMLConfigBuilder extends BaseBuilder {
     this.parser = parser;
   }
 
+  /**
+   * 配置解析
+   *
+   * @return {@link Configuration}
+   */
   public Configuration parse() {
     if (parsed) {
       throw new BuilderException("Each XMLConfigBuilder can only be used once.");
     }
     parsed = true;
+    //解析 configuration 节点下的内容
     parseConfiguration(parser.evalNode("/configuration"));
     return configuration;
   }

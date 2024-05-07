@@ -1,5 +1,5 @@
 /*
- *    Copyright 2009-2023 the original author or authors.
+ *    Copyright 2009-2024 the original author or authors.
  *
  *    Licensed under the Apache License, Version 2.0 (the "License");
  *    you may not use this file except in compliance with the License.
@@ -29,11 +29,24 @@ import org.apache.ibatis.type.TypeHandler;
 import org.apache.ibatis.type.TypeHandlerRegistry;
 
 /**
+ * 基础构造器
+ *
  * @author Clinton Begin
+ *
+ * @date 2024/05/07
  */
 public abstract class BaseBuilder {
+  /**
+   * 配置
+   */
   protected final Configuration configuration;
+  /**
+   * 类型别名注册表
+   */
   protected final TypeAliasRegistry typeAliasRegistry;
+  /**
+   * 类型处理程序注册表
+   */
   protected final TypeHandlerRegistry typeHandlerRegistry;
 
   public BaseBuilder(Configuration configuration) {
