@@ -32,7 +32,10 @@ import org.apache.ibatis.transaction.TransactionFactory;
 import org.apache.ibatis.transaction.managed.ManagedTransactionFactory;
 
 /**
+ * 默认sql会话工厂
+ *
  * @author Clinton Begin
+ * @date 2024/05/09
  */
 public class DefaultSqlSessionFactory implements SqlSessionFactory {
 

@@ -29,33 +29,105 @@ import org.apache.ibatis.scripting.LanguageDriver;
 import org.apache.ibatis.session.Configuration;
 
 /**
+ * 映射语句
+ *
  * @author Clinton Begin
+ * @date 2024/05/09
  */
 public final class MappedStatement {
 
+  /**
+   * 资源
+   */
   private String resource;
+  /**
+   * 配置
+   */
   private Configuration configuration;
   private String id;
+  /**
+   * 提取大小
+   */
   private Integer fetchSize;
+  /**
+   * 超时
+   */
   private Integer timeout;
+  /**
+   * 语句类型
+   */
   private StatementType statementType;
+  /**
+   * 结果集类型
+   */
   private ResultSetType resultSetType;
+  /**
+   * sql源
+   */
   private SqlSource sqlSource;
+  /**
+   * 缓存
+   */
   private Cache cache;
+  /**
+   * 参数map
+   */
   private ParameterMap parameterMap;
+  /**
+   * 结果图
+   */
   private List<ResultMap> resultMaps;
+  /**
+   * 需要刷新缓存
+   */
   private boolean flushCacheRequired;
+  /**
+   * 使用缓存
+   */
   private boolean useCache;
+  /**
+   * 结果排序
+   */
   private boolean resultOrdered;
+  /**
+   * sql命令类型
+   */
   private SqlCommandType sqlCommandType;
+  /**
+   * Key生成器
+   */
   private KeyGenerator keyGenerator;
+  /**
+   * Key特性
+   */
   private String[] keyProperties;
+  /**
+   * Key列
+   */
   private String[] keyColumns;
+  /**
+   * 具有嵌套结果映射
+   */
   private boolean hasNestedResultMaps;
+  /**
+   * 数据库id
+   */
   private String databaseId;
+  /**
+   * 语句日志
+   */
   private Log statementLog;
+  /**
+   * 语言驱动
+   */
   private LanguageDriver lang;
+  /**
+   * 结果集
+   */
   private String[] resultSets;
+  /**
+   * 脏读
+   */
   private boolean dirtySelect;
 
   MappedStatement() {
