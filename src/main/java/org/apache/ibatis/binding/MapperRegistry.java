@@ -27,13 +27,17 @@ import org.apache.ibatis.session.Configuration;
 import org.apache.ibatis.session.SqlSession;
 
 /**
+ * 映射器注册表
+ *
  * @author Clinton Begin
- * @author Eduardo Macarron
- * @author Lasse Voss
+ * @date 2024/05/09
  */
 public class MapperRegistry {
 
   private final Configuration config;
+  /**
+   * 已知映射器
+   */
   private final Map<Class<?>, MapperProxyFactory<?>> knownMappers = new ConcurrentHashMap<>();
 
   public MapperRegistry(Configuration config) {

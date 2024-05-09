@@ -58,12 +58,12 @@ public class SqlSessionFactoryBuilder {
    */
   public SqlSessionFactory build(Reader reader, String environment, Properties properties) {
     try {
-      //解析配置
+      // 解析配置
       XMLConfigBuilder parser = new XMLConfigBuilder(reader, environment, properties);
-      //解析好的配置
+      // 解析好的配置
       Configuration configuration = parser.parse();
 
-      //根据配置创建 sqlSessionFactory
+      // 根据配置创建 sqlSessionFactory
       SqlSessionFactory sqlSessionFactory = build(configuration);
 
       return sqlSessionFactory;
@@ -108,11 +108,11 @@ public class SqlSessionFactoryBuilder {
    */
   public SqlSessionFactory build(InputStream inputStream, String environment, Properties properties) {
     try {
-      //解析器
+      // 解析器
       XMLConfigBuilder parser = new XMLConfigBuilder(inputStream, environment, properties);
-      //解析配置
+      // 解析配置
       Configuration configuration = parser.parse();
-      //根据配置创建 SqlSessionFactory
+      // 根据配置创建 SqlSessionFactory
       SqlSessionFactory sqlSessionFactory = build(configuration);
 
       return sqlSessionFactory;

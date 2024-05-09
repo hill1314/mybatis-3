@@ -98,7 +98,7 @@ public class XMLConfigBuilder extends BaseBuilder {
 
   private XMLConfigBuilder(Class<? extends Configuration> configClass, XPathParser parser, String environment,
       Properties props) {
-    //构建配置解析对象
+    // 构建配置解析对象
     super(newConfig(configClass));
     ErrorContext.instance().resource("SQL Mapper Configuration");
     this.configuration.setVariables(props);
@@ -118,7 +118,7 @@ public class XMLConfigBuilder extends BaseBuilder {
     }
     parsed = true;
 
-    //解析 mybatis-config.xml中的内容，同时创建 Configuration 对象
+    // 解析 mybatis-config.xml中的内容，同时创建 Configuration 对象
     parseConfiguration(parser.evalNode("/configuration"));
 
     return configuration;
@@ -127,7 +127,8 @@ public class XMLConfigBuilder extends BaseBuilder {
   /**
    * 解析配置
    *
-   * @param root 根
+   * @param root
+   *          根
    */
   private void parseConfiguration(XNode root) {
     try {
@@ -141,13 +142,13 @@ public class XMLConfigBuilder extends BaseBuilder {
       objectFactoryElement(root.evalNode("objectFactory"));
       objectWrapperFactoryElement(root.evalNode("objectWrapperFactory"));
       reflectorFactoryElement(root.evalNode("reflectorFactory"));
-      //setting 设置
+      // setting 设置
       settingsElement(settings);
       // read it after objectFactory and objectWrapperFactory issue #631
       environmentsElement(root.evalNode("environments"));
       databaseIdProviderElement(root.evalNode("databaseIdProvider"));
       typeHandlersElement(root.evalNode("typeHandlers"));
-      //mapper 映射文件
+      // mapper 映射文件
       mappersElement(root.evalNode("mappers"));
     } catch (Exception e) {
       throw new BuilderException("Error parsing SQL Mapper Configuration. Cause: " + e, e);
@@ -163,7 +164,7 @@ public class XMLConfigBuilder extends BaseBuilder {
     MetaClass metaConfig = MetaClass.forClass(Configuration.class, localReflectorFactory);
     for (Object key : props.keySet()) {
 
-      //非法设置检查
+      // 非法设置检查
       if (!metaConfig.hasSetter(String.valueOf(key))) {
         throw new BuilderException(
             "The setting " + key + " is not known.  Make sure you spelled it correctly (case sensitive).");
@@ -195,19 +196,20 @@ public class XMLConfigBuilder extends BaseBuilder {
   /**
    * 类型别名 元素
    *
-   * @param context 上下文
+   * @param context
+   *          上下文
    */
   private void typeAliasesElement(XNode context) {
     if (context == null) {
       return;
     }
     for (XNode child : context.getChildren()) {
-      //包别名
+      // 包别名
       if ("package".equals(child.getName())) {
         String typeAliasPackage = child.getStringAttribute("name");
         configuration.getTypeAliasRegistry().registerAliases(typeAliasPackage);
       } else {
-        //类型别名
+        // 类型别名
         String alias = child.getStringAttribute("alias");
         String type = child.getStringAttribute("type");
         try {
@@ -266,8 +268,11 @@ public class XMLConfigBuilder extends BaseBuilder {
   /**
    * properties元素解析
    *
-   * @param context 上下文
-   * @throws Exception 例外
+   * @param context
+   *          上下文
+   *
+   * @throws Exception
+   *           例外
    */
   private void propertiesElement(XNode context) throws Exception {
     if (context == null) {
@@ -290,14 +295,15 @@ public class XMLConfigBuilder extends BaseBuilder {
       defaults.putAll(vars);
     }
     parser.setVariables(defaults);
-    //解析好的信息保存到配置中
+    // 解析好的信息保存到配置中
     configuration.setVariables(defaults);
   }
 
   /**
    * settings元素
    *
-   * @param props 支柱
+   * @param props
+   *          支柱
    */
   private void settingsElement(Properties props) {
     configuration
@@ -443,7 +449,7 @@ public class XMLConfigBuilder extends BaseBuilder {
         if (resource != null && url == null && mapperClass == null) {
           ErrorContext.instance().resource(resource);
           try (InputStream inputStream = Resources.getResourceAsStream(resource)) {
-            //mapper文件解析
+            // mapper文件解析
             XMLMapperBuilder mapperParser = new XMLMapperBuilder(inputStream, configuration, resource,
                 configuration.getSqlFragments());
             mapperParser.parse();
@@ -452,7 +458,7 @@ public class XMLConfigBuilder extends BaseBuilder {
         } else if (resource == null && url != null && mapperClass == null) {
           ErrorContext.instance().resource(url);
           try (InputStream inputStream = Resources.getUrlAsStream(url)) {
-            //mapper文件解析
+            // mapper文件解析
             XMLMapperBuilder mapperParser = new XMLMapperBuilder(inputStream, configuration, url,
                 configuration.getSqlFragments());
             mapperParser.parse();

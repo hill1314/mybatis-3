@@ -1,5 +1,5 @@
 /*
- *    Copyright 2009-2023 the original author or authors.
+ *    Copyright 2009-2024 the original author or authors.
  *
  *    Licensed under the Apache License, Version 2.0 (the "License");
  *    you may not use this file except in compliance with the License.
@@ -35,6 +35,7 @@ import org.apache.ibatis.transaction.managed.ManagedTransactionFactory;
  * 默认sql会话工厂
  *
  * @author Clinton Begin
+ *
  * @date 2024/05/09
  */
 public class DefaultSqlSessionFactory implements SqlSessionFactory {
@@ -93,21 +94,25 @@ public class DefaultSqlSessionFactory implements SqlSessionFactory {
   /**
    * 从数据源打开会话
    *
-   * @param execType   exec类型
-   * @param level      数量
-   * @param autoCommit 自动提交
+   * @param execType
+   *          exec类型
+   * @param level
+   *          数量
+   * @param autoCommit
+   *          自动提交
+   *
    * @return {@link SqlSession}
    */
   private SqlSession openSessionFromDataSource(ExecutorType execType, TransactionIsolationLevel level,
       boolean autoCommit) {
     Transaction tx = null;
     try {
-      //环境
+      // 环境
       final Environment environment = configuration.getEnvironment();
-      //事务
+      // 事务
       final TransactionFactory transactionFactory = getTransactionFactoryFromEnvironment(environment);
       tx = transactionFactory.newTransaction(environment.getDataSource(), level, autoCommit);
-      //执行器
+      // 执行器
       final Executor executor = configuration.newExecutor(tx, execType);
 
       return new DefaultSqlSession(configuration, executor, autoCommit);
