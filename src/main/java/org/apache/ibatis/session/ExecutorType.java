@@ -20,10 +20,19 @@ package org.apache.ibatis.session;
  */
 public enum ExecutorType {
 
+  /**
+   * 简单
+   */
   SIMPLE,
 
+  /**
+   * 重新使用
+   */
   REUSE,
 
+  /**
+   * 批量
+   */
   BATCH
 
 }
