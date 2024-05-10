@@ -182,13 +182,20 @@ public class DefaultResultSetHandler implements ResultSetHandler {
     }
   }
 
-  //
+  /**
+   * 处理结果集
+   *
+   * @param stmt stmt
+   * @return {@link List}<{@link Object}>
+   * @throws SQLException SQLException
+   *///
   // HANDLE RESULT SETS
   //
   @Override
   public List<Object> handleResultSets(Statement stmt) throws SQLException {
     ErrorContext.instance().activity("handling results").object(mappedStatement.getId());
 
+    //
     final List<Object> multipleResults = new ArrayList<>();
 
     int resultSetCount = 0;

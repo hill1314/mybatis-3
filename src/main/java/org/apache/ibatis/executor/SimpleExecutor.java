@@ -32,7 +32,10 @@ import org.apache.ibatis.session.RowBounds;
 import org.apache.ibatis.transaction.Transaction;
 
 /**
+ * 简单执行人
+ *
  * @author Clinton Begin
+ * @date 2024/05/10
  */
 public class SimpleExecutor extends BaseExecutor {
 
@@ -45,8 +48,11 @@ public class SimpleExecutor extends BaseExecutor {
     Statement stmt = null;
     try {
       Configuration configuration = ms.getConfiguration();
+      // 创建StatementHandler
       StatementHandler handler = configuration.newStatementHandler(this, ms, parameter, RowBounds.DEFAULT, null, null);
+      // 创建Statement
       stmt = prepareStatement(handler, ms.getStatementLog());
+      // 执行更新操作
       return handler.update(stmt);
     } finally {
       closeStatement(stmt);
@@ -62,6 +68,7 @@ public class SimpleExecutor extends BaseExecutor {
       StatementHandler handler = configuration.newStatementHandler(wrapper, ms, parameter, rowBounds, resultHandler,
           boundSql);
       stmt = prepareStatement(handler, ms.getStatementLog());
+      // 执行查询操作
       return handler.query(stmt, resultHandler);
     } finally {
       closeStatement(stmt);
@@ -84,10 +91,20 @@ public class SimpleExecutor extends BaseExecutor {
     return Collections.emptyList();
   }
 
+  /**
+   * 准备
+   *
+   * @param handler      处理程序
+   * @param statementLog 语句日志
+   * @return {@link Statement}
+   * @throws SQLException SQLException
+   */
   private Statement prepareStatement(StatementHandler handler, Log statementLog) throws SQLException {
     Statement stmt;
+    // 创建链接
     Connection connection = getConnection(statementLog);
     stmt = handler.prepare(connection, transaction.getTimeout());
+    //设置参数
     handler.parameterize(stmt);
     return stmt;
   }

@@ -54,8 +54,16 @@ public class MapperMethod {
     this.method = new MethodSignature(config, mapperInterface, method);
   }
 
+  /**
+   * 执行
+   *
+   * @param sqlSession sql会话
+   * @param args       args
+   * @return {@link Object}
+   */
   public Object execute(SqlSession sqlSession, Object[] args) {
     Object result;
+    //实际调的也是 DefaultSqlSession
     switch (command.getType()) {
       case INSERT: {
         Object param = method.convertArgsToSqlCommandParam(args);
@@ -73,6 +81,7 @@ public class MapperMethod {
         break;
       }
       case SELECT:
+        //根据返回类型 分别处理
         if (method.returnsVoid() && method.hasResultHandler()) {
           executeWithResultHandler(sqlSession, args);
           result = null;
@@ -103,6 +112,12 @@ public class MapperMethod {
     return result;
   }
 
+  /**
+   * 行计数结果
+   *
+   * @param rowCount 行计数
+   * @return {@link Object}
+   */
   private Object rowCountResult(int rowCount) {
     final Object result;
     if (method.returnsVoid()) {
@@ -301,6 +316,12 @@ public class MapperMethod {
       this.paramNameResolver = new ParamNameResolver(configuration, method);
     }
 
+    /**
+     * 类型转换args到sql命令参数
+     *
+     * @param args args
+     * @return {@link Object}
+     */
     public Object convertArgsToSqlCommandParam(Object[] args) {
       return paramNameResolver.getNamedParams(args);
     }

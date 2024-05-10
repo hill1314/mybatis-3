@@ -31,8 +31,11 @@ import org.apache.ibatis.session.SqlSession;
 import org.apache.ibatis.util.MapUtil;
 
 /**
+ * Mapper代理
+ *
  * @author Clinton Begin
  * @author Eduardo Macarron
+ * @date 2024/05/10
  */
 public class MapperProxy<T> implements InvocationHandler, Serializable {
 
@@ -43,6 +46,11 @@ public class MapperProxy<T> implements InvocationHandler, Serializable {
   private static final Method privateLookupInMethod;
   private final SqlSession sqlSession;
   private final Class<T> mapperInterface;
+  /**
+   * MapperMethod 缓存
+   * 1，MapperMethod 用于参数转换和sql执行
+   * 2. MapperMethod 不记录状态信息，可以在多线程间共享
+   */
   private final Map<Method, MapperMethodInvoker> methodCache;
 
   public MapperProxy(SqlSession sqlSession, Class<T> mapperInterface, Map<Method, MapperMethodInvoker> methodCache) {
@@ -80,10 +88,14 @@ public class MapperProxy<T> implements InvocationHandler, Serializable {
   @Override
   public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
     try {
+      //toString\hashCode\equals 等方法不需要执行SQL流程
       if (Object.class.equals(method.getDeclaringClass())) {
         return method.invoke(this, args);
       }
-      return cachedInvoker(method).invoke(proxy, method, args, sqlSession);
+      //PlainMethodInvoker or DefaultMethodInvoker
+      MapperMethodInvoker invoker = cachedInvoker(method);
+      //通过用的是 PlainMethodInvoker实现
+      return invoker.invoke(proxy, method, args, sqlSession);
     } catch (Throwable t) {
       throw ExceptionUtil.unwrapThrowable(t);
     }
@@ -129,6 +141,12 @@ public class MapperProxy<T> implements InvocationHandler, Serializable {
     Object invoke(Object proxy, Method method, Object[] args, SqlSession sqlSession) throws Throwable;
   }
 
+  /**
+   * 普通方法调用程序
+   *
+   * @author huleilei9
+   * @date 2024/05/10
+   */
   private static class PlainMethodInvoker implements MapperMethodInvoker {
     private final MapperMethod mapperMethod;
 
@@ -142,6 +160,12 @@ public class MapperProxy<T> implements InvocationHandler, Serializable {
     }
   }
 
+  /**
+   * 默认方法调用程序
+   *
+   * @author huleilei9
+   * @date 2024/05/10
+   */
   private static class DefaultMethodInvoker implements MapperMethodInvoker {
     private final MethodHandle methodHandle;
 

@@ -82,6 +82,14 @@ public abstract class BaseStatementHandler implements StatementHandler {
     return parameterHandler;
   }
 
+  /**
+   * 准备
+   *
+   * @param connection         联系
+   * @param transactionTimeout 事务超时
+   * @return {@link Statement}
+   * @throws SQLException SQLException
+   */
   @Override
   public Statement prepare(Connection connection, Integer transactionTimeout) throws SQLException {
     ErrorContext.instance().sql(boundSql.getSql());

@@ -20,7 +20,10 @@ import java.util.Collections;
 import java.util.List;
 
 /**
+ * 拦截器链
+ *
  * @author Clinton Begin
+ * @date 2024/05/10
  */
 public class InterceptorChain {
 
@@ -28,6 +31,7 @@ public class InterceptorChain {
 
   public Object pluginAll(Object target) {
     for (Interceptor interceptor : interceptors) {
+      //每个拦截器都会包装一下 执行器对象
       target = interceptor.plugin(target);
     }
     return target;

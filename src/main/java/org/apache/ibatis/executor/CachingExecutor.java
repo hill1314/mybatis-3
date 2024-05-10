@@ -33,8 +33,11 @@ import org.apache.ibatis.session.RowBounds;
 import org.apache.ibatis.transaction.Transaction;
 
 /**
+ * 二级缓存执行器
+ *
  * @author Clinton Begin
  * @author Eduardo Macarron
+ * @date 2024/05/10
  */
 public class CachingExecutor implements Executor {
 

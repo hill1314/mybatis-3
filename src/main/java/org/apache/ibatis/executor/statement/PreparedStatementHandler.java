@@ -63,6 +63,7 @@ public class PreparedStatementHandler extends BaseStatementHandler {
   public <E> List<E> query(Statement statement, ResultHandler resultHandler) throws SQLException {
     PreparedStatement ps = (PreparedStatement) statement;
     ps.execute();
+    //执行结果处理
     return resultSetHandler.handleResultSets(ps);
   }
 
@@ -73,6 +74,13 @@ public class PreparedStatementHandler extends BaseStatementHandler {
     return resultSetHandler.handleCursorResultSets(ps);
   }
 
+  /**
+   * 实例化语句
+   *
+   * @param connection 联系
+   * @return {@link Statement}
+   * @throws SQLException SQLException
+   */
   @Override
   protected Statement instantiateStatement(Connection connection) throws SQLException {
     String sql = boundSql.getSql();
