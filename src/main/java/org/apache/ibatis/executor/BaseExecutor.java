@@ -45,13 +45,19 @@ import org.apache.ibatis.transaction.Transaction;
 import org.apache.ibatis.type.TypeHandlerRegistry;
 
 /**
+ * 基本执行器
+ *
  * @author Clinton Begin
+ * @date 2024/05/11
  */
 public abstract class BaseExecutor implements Executor {
 
   private static final Log log = LogFactory.getLog(BaseExecutor.class);
 
   protected Transaction transaction;
+  /**
+   * 执行器包装器
+   */
   protected Executor wrapper;
 
   protected ConcurrentLinkedQueue<DeferredLoad> deferredLoads;
@@ -130,6 +136,16 @@ public abstract class BaseExecutor implements Executor {
     return doFlushStatements(isRollBack);
   }
 
+  /**
+   * 查询
+   *
+   * @param ms
+   * @param parameter     参数
+   * @param rowBounds     行边界
+   * @param resultHandler 结果处理程序
+   * @return {@link List }<{@link E }>
+   * @throws SQLException SQLException
+   */
   @Override
   public <E> List<E> query(MappedStatement ms, Object parameter, RowBounds rowBounds, ResultHandler resultHandler)
       throws SQLException {
@@ -138,6 +154,18 @@ public abstract class BaseExecutor implements Executor {
     return query(ms, parameter, rowBounds, resultHandler, key, boundSql);
   }
 
+  /**
+   * 查询
+   *
+   * @param ms
+   * @param parameter     参数
+   * @param rowBounds     行边界
+   * @param resultHandler 结果处理程序
+   * @param key           key
+   * @param boundSql      绑定sql
+   * @return {@link List }<{@link E }>
+   * @throws SQLException SQLException
+   */
   @SuppressWarnings("unchecked")
   @Override
   public <E> List<E> query(MappedStatement ms, Object parameter, RowBounds rowBounds, ResultHandler resultHandler,
@@ -149,6 +177,7 @@ public abstract class BaseExecutor implements Executor {
     if (queryStack == 0 && ms.isFlushCacheRequired()) {
       clearLocalCache();
     }
+
     List<E> list;
     try {
       queryStack++;
