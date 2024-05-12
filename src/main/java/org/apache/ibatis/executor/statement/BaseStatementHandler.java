@@ -34,7 +34,10 @@ import org.apache.ibatis.session.RowBounds;
 import org.apache.ibatis.type.TypeHandlerRegistry;
 
 /**
+ * 基础陈述处理程序
+ *
  * @author Clinton Begin
+ * @date 2024/05/11
  */
 public abstract class BaseStatementHandler implements StatementHandler {
 
@@ -67,7 +70,9 @@ public abstract class BaseStatementHandler implements StatementHandler {
 
     this.boundSql = boundSql;
 
+    // 创建参数处理器
     this.parameterHandler = configuration.newParameterHandler(mappedStatement, parameterObject, boundSql);
+    // 创建结果集处理器
     this.resultSetHandler = configuration.newResultSetHandler(executor, mappedStatement, rowBounds, parameterHandler,
         resultHandler, boundSql);
   }

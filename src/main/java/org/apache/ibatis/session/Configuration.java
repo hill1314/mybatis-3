@@ -714,17 +714,16 @@ public class Configuration {
     return MetaObject.forObject(object, objectFactory, objectWrapperFactory, reflectorFactory);
   }
 
-  public ParameterHandler newParameterHandler(MappedStatement mappedStatement, Object parameterObject,
-      BoundSql boundSql) {
-    ParameterHandler parameterHandler = mappedStatement.getLang().createParameterHandler(mappedStatement,
-        parameterObject, boundSql);
+  public ParameterHandler newParameterHandler(MappedStatement mappedStatement, Object parameterObject,BoundSql boundSql) {
+    // 创建一个parameterHandler
+    ParameterHandler parameterHandler = mappedStatement.getLang().createParameterHandler(mappedStatement,parameterObject, boundSql);
     return (ParameterHandler) interceptorChain.pluginAll(parameterHandler);
   }
 
   public ResultSetHandler newResultSetHandler(Executor executor, MappedStatement mappedStatement, RowBounds rowBounds,
       ParameterHandler parameterHandler, ResultHandler resultHandler, BoundSql boundSql) {
-    ResultSetHandler resultSetHandler = new DefaultResultSetHandler(executor, mappedStatement, parameterHandler,
-        resultHandler, boundSql, rowBounds);
+    // 创建一个resultSetHandler
+    ResultSetHandler resultSetHandler = new DefaultResultSetHandler(executor, mappedStatement, parameterHandler,resultHandler, boundSql, rowBounds);
     return (ResultSetHandler) interceptorChain.pluginAll(resultSetHandler);
   }
 

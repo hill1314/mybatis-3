@@ -27,7 +27,11 @@ import org.apache.ibatis.reflection.invoker.MethodInvoker;
 import org.apache.ibatis.reflection.property.PropertyTokenizer;
 
 /**
+ * 元类
+ * 用于对复杂属性表达式的解析
+ *
  * @author Clinton Begin
+ * @date 2024/05/12
  */
 public class MetaClass {
 
@@ -165,7 +169,9 @@ public class MetaClass {
   }
 
   private StringBuilder buildProperty(String name, StringBuilder builder) {
+    //解析表达式，类似：orders[0].items[0].name
     PropertyTokenizer prop = new PropertyTokenizer(name);
+    //子表达式
     if (prop.hasNext()) {
       String propertyName = reflector.findPropertyName(prop.getName());
       if (propertyName != null) {

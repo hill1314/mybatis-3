@@ -38,11 +38,7 @@ public interface ObjectFactory {
   /**
    * Creates a new object with default constructor.
    *
-   * @param <T>
-   *          the generic type
-   * @param type
-   *          Object type
-   *
+   * @param type Object type
    * @return the t
    */
   <T> T create(Class<T> type);

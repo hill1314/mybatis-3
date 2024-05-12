@@ -49,12 +49,18 @@ import org.apache.ibatis.io.Resources;
 import org.apache.ibatis.session.Configuration;
 
 /**
+ * 类型处理程序注册表
+ *
  * @author Clinton Begin
  * @author Kazuki Shimizu
+ * @date 2024/05/12
  */
 public final class TypeHandlerRegistry {
 
   private final Map<JdbcType, TypeHandler<?>> jdbcTypeHandlerMap = new EnumMap<>(JdbcType.class);
+  /**
+   * 类型处理程序map
+   */
   private final Map<Type, Map<JdbcType, TypeHandler<?>>> typeHandlerMap = new ConcurrentHashMap<>();
   private final TypeHandler<Object> unknownTypeHandler;
   private final Map<Class<?>, TypeHandler<?>> allTypeHandlersMap = new HashMap<>();

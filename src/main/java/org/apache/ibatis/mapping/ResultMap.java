@@ -41,6 +41,9 @@ public class ResultMap {
   private Class<?> type;
   private List<ResultMapping> resultMappings;
   private List<ResultMapping> idResultMappings;
+  /**
+   * 构造函数结果映射
+   */
   private List<ResultMapping> constructorResultMappings;
   private List<ResultMapping> propertyResultMappings;
   private Set<String> mappedColumns;
