@@ -26,6 +26,8 @@ import org.apache.ibatis.logging.LogFactory;
 
 /**
  * The 2nd level cache transactional buffer.
+ * 二级缓存事务缓冲区
+ *
  * <p>
  * This class holds all cache entries that are to be added to the 2nd level cache during a Session. Entries are sent to
  * the cache when commit is called or discarded if the Session is rolled back. Blocking cache support has been added.
@@ -34,6 +36,7 @@ import org.apache.ibatis.logging.LogFactory;
  *
  * @author Clinton Begin
  * @author Eduardo Macarron
+ * @date 2024/05/12
  */
 public class TransactionalCache implements Cache {
 

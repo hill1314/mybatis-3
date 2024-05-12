@@ -22,7 +22,10 @@ import org.apache.ibatis.cache.decorators.TransactionalCache;
 import org.apache.ibatis.util.MapUtil;
 
 /**
+ * 二级缓存 管理器
+ *
  * @author Clinton Begin
+ * @date 2024/05/12
  */
 public class TransactionalCacheManager {
 

@@ -67,7 +67,7 @@ public final class MappedStatement {
    */
   private SqlSource sqlSource;
   /**
-   * 缓存
+   * 二级缓存
    */
   private Cache cache;
   /**

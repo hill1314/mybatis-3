@@ -91,8 +91,10 @@ public class CacheBuilder {
 
   public Cache build() {
     setDefaultImplementations();
+
     Cache cache = newBaseCacheInstance(implementation, id);
     setCacheProperties(cache);
+
     // issue #352, do not apply decorators to custom caches
     if (PerpetualCache.class.equals(cache.getClass())) {
       for (Class<? extends Cache> decorator : decorators) {
@@ -100,7 +102,9 @@ public class CacheBuilder {
         setCacheProperties(cache);
       }
       cache = setStandardDecorators(cache);
+
     } else if (!LoggingCache.class.isAssignableFrom(cache.getClass())) {
+      //加一个打印日志的Cache装饰器
       cache = new LoggingCache(cache);
     }
     return cache;
@@ -115,12 +119,20 @@ public class CacheBuilder {
     }
   }
 
+  /**
+   * 设置标准装饰器
+   *
+   * @param cache 隐藏物
+   * @return {@link Cache}
+   */
   private Cache setStandardDecorators(Cache cache) {
     try {
       MetaObject metaCache = SystemMetaObject.forObject(cache);
       if (size != null && metaCache.hasSetter("size")) {
         metaCache.setValue("size", size);
       }
+
+      //cache各种装饰
       if (clearInterval != null) {
         cache = new ScheduledCache(cache);
         ((ScheduledCache) cache).setClearInterval(clearInterval);
@@ -174,7 +186,7 @@ public class CacheBuilder {
         ((InitializingObject) cache).initialize();
       } catch (Exception e) {
         throw new CacheException(
-            "Failed cache initialization for '" + cache.getId() + "' on '" + cache.getClass().getName() + "'", e);
+          "Failed cache initialization for '" + cache.getId() + "' on '" + cache.getClass().getName() + "'", e);
       }
     }
   }
@@ -193,8 +205,8 @@ public class CacheBuilder {
       return cacheClass.getConstructor(String.class);
     } catch (Exception e) {
       throw new CacheException("Invalid base cache implementation (" + cacheClass + ").  "
-          + "Base cache implementations must have a constructor that takes a String id as a parameter.  Cause: " + e,
-          e);
+        + "Base cache implementations must have a constructor that takes a String id as a parameter.  Cause: " + e,
+        e);
     }
   }
 
@@ -212,7 +224,7 @@ public class CacheBuilder {
       return cacheClass.getConstructor(Cache.class);
     } catch (Exception e) {
       throw new CacheException("Invalid cache decorator (" + cacheClass + ").  "
-          + "Cache decorators must have a constructor that takes a Cache instance as a parameter.  Cause: " + e, e);
+        + "Cache decorators must have a constructor that takes a Cache instance as a parameter.  Cause: " + e, e);
     }
   }
 }

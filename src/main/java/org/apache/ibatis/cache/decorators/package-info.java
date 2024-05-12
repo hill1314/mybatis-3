@@ -15,5 +15,6 @@
  */
 /**
  * Contains cache decorators.
+ * 缓存装饰器 实现，各个装饰器 可以进行 叠加
  */
 package org.apache.ibatis.cache.decorators;

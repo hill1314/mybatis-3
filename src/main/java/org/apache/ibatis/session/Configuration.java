@@ -210,6 +210,7 @@ public class Configuration {
     typeAliasRegistry.registerAlias("POOLED", PooledDataSourceFactory.class);
     typeAliasRegistry.registerAlias("UNPOOLED", UnpooledDataSourceFactory.class);
 
+    //缓存相关别名
     typeAliasRegistry.registerAlias("PERPETUAL", PerpetualCache.class);
     typeAliasRegistry.registerAlias("FIFO", FifoCache.class);
     typeAliasRegistry.registerAlias("LRU", LruCache.class);
@@ -719,6 +720,7 @@ public class Configuration {
     // 创建一个parameterHandler
     ParameterHandler parameterHandler = mappedStatement.getLang().createParameterHandler(mappedStatement,
         parameterObject, boundSql);
+    //织入插件逻辑
     return (ParameterHandler) interceptorChain.pluginAll(parameterHandler);
   }
 
@@ -727,6 +729,7 @@ public class Configuration {
     // 创建一个resultSetHandler
     ResultSetHandler resultSetHandler = new DefaultResultSetHandler(executor, mappedStatement, parameterHandler,
         resultHandler, boundSql, rowBounds);
+    //织入插件逻辑
     return (ResultSetHandler) interceptorChain.pluginAll(resultSetHandler);
   }
 

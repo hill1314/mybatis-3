@@ -32,7 +32,7 @@ public class InterceptorChain {
 
   public Object pluginAll(Object target) {
     for (Interceptor interceptor : interceptors) {
-      // 每个拦截器都会包装一下 执行器对象
+      //每个拦截器 层层包装，形成一个拦截器链
       target = interceptor.plugin(target);
     }
     return target;

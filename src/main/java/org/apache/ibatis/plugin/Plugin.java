@@ -52,10 +52,13 @@ public class Plugin implements InvocationHandler {
    * @return {@link Object}
    */
   public static Object wrap(Object target, Interceptor interceptor) {
+    // 获取 Intercepts 注解信息
     Map<Class<?>, Set<Method>> signatureMap = getSignatureMap(interceptor);
     Class<?> type = target.getClass();
+
     Class<?>[] interfaces = getAllInterfaces(type, signatureMap);
     if (interfaces.length > 0) {
+      //创建代理对象
       return Proxy.newProxyInstance(type.getClassLoader(), interfaces, new Plugin(target, interceptor, signatureMap));
     }
     return target;
@@ -66,14 +69,23 @@ public class Plugin implements InvocationHandler {
     try {
       Set<Method> methods = signatureMap.get(method.getDeclaringClass());
       if (methods != null && methods.contains(method)) {
+        // 执行拦截器方法
         return interceptor.intercept(new Invocation(target, method, args));
       }
+
+      // 执行原对象方法
       return method.invoke(target, args);
     } catch (Exception e) {
       throw ExceptionUtil.unwrapThrowable(e);
     }
   }
 
+  /**
+   * 获取 Intercepts 注解信息
+   *
+   * @param interceptor 拦截器
+   * @return {@link Map}<{@link Class}<{@link ?}>, {@link Set}<{@link Method}>>
+   */
   private static Map<Class<?>, Set<Method>> getSignatureMap(Interceptor interceptor) {
     Intercepts interceptsAnnotation = interceptor.getClass().getAnnotation(Intercepts.class);
     // issue #251
