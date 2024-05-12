@@ -1,5 +1,5 @@
 /*
- *    Copyright 2009-2023 the original author or authors.
+ *    Copyright 2009-2024 the original author or authors.
  *
  *    Licensed under the Apache License, Version 2.0 (the "License");
  *    you may not use this file except in compliance with the License.
@@ -39,25 +39,31 @@ public class RoutingStatementHandler implements StatementHandler {
   /**
    * 路由语句处理程序
    *
-   * @param executor      遗嘱执行人
-   * @param ms            太太
-   * @param parameter     参数
-   * @param rowBounds     行边界
-   * @param resultHandler 结果处理程序
-   * @param boundSql      绑定sql
+   * @param executor
+   *          遗嘱执行人
+   * @param ms
+   *          太太
+   * @param parameter
+   *          参数
+   * @param rowBounds
+   *          行边界
+   * @param resultHandler
+   *          结果处理程序
+   * @param boundSql
+   *          绑定sql
    */
   public RoutingStatementHandler(Executor executor, MappedStatement ms, Object parameter, RowBounds rowBounds,
       ResultHandler resultHandler, BoundSql boundSql) {
 
-    //mapper配置文件 sql中的 statementType
+    // mapper配置文件 sql中的 statementType
     switch (ms.getStatementType()) {
       case STATEMENT:
         delegate = new SimpleStatementHandler(executor, ms, parameter, rowBounds, resultHandler, boundSql);
         break;
-      case PREPARED:  //默认
+      case PREPARED: // 默认
         delegate = new PreparedStatementHandler(executor, ms, parameter, rowBounds, resultHandler, boundSql);
         break;
-      case CALLABLE: //存储过程
+      case CALLABLE: // 存储过程
         delegate = new CallableStatementHandler(executor, ms, parameter, rowBounds, resultHandler, boundSql);
         break;
       default:

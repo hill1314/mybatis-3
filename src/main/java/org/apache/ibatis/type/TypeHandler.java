@@ -1,5 +1,5 @@
 /*
- *    Copyright 2009-2023 the original author or authors.
+ *    Copyright 2009-2024 the original author or authors.
  *
  *    Licensed under the Apache License, Version 2.0 (the "License");
  *    you may not use this file except in compliance with the License.
@@ -24,19 +24,24 @@ import java.sql.SQLException;
  * 类型处理器接口，处理java类型与jdbc类型之间的转换。
  *
  * @author Clinton Begin
+ *
  * @date 2024/05/12
  */
 public interface TypeHandler<T> {
 
   /**
-   * 设置参数
-   * 将指定位置的 java类型值 转换成jdbc类型
+   * 设置参数 将指定位置的 java类型值 转换成jdbc类型
    *
-   * @param ps        ps
+   * @param ps
+   *          ps
    * @param i
-   * @param parameter 参数
-   * @param jdbcType  jdbc类型
-   * @throws SQLException SQLException
+   * @param parameter
+   *          参数
+   * @param jdbcType
+   *          jdbc类型
+   *
+   * @throws SQLException
+   *           SQLException
    */
   void setParameter(PreparedStatement ps, int i, T parameter, JdbcType jdbcType) throws SQLException;
 
@@ -58,10 +63,15 @@ public interface TypeHandler<T> {
   /**
    * 获取结果
    *
-   * @param rs          rs
-   * @param columnIndex 列索引
+   * @param rs
+   *          rs
+   * @param columnIndex
+   *          列索引
+   *
    * @return {@link T}
-   * @throws SQLException SQLException
+   *
+   * @throws SQLException
+   *           SQLException
    */
   T getResult(ResultSet rs, int columnIndex) throws SQLException;
 

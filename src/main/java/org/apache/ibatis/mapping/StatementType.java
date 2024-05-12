@@ -1,5 +1,5 @@
 /*
- *    Copyright 2009-2022 the original author or authors.
+ *    Copyright 2009-2024 the original author or authors.
  *
  *    Licensed under the Apache License, Version 2.0 (the "License");
  *    you may not use this file except in compliance with the License.
@@ -16,14 +16,27 @@
 package org.apache.ibatis.mapping;
 
 /**
+ * 语句类型
+ *
  * @author Clinton Begin
+ *
+ * @date 2024/05/12
  */
 public enum StatementType {
 
+  /**
+   * 基本类型，用于执行不带参数的SQL语句
+   */
   STATEMENT,
 
+  /**
+   * 用于执行带参数的SQL语句。 使用PreparedStatement可以防止SQL注入攻击，并且可以提高性能，因为它允许数据库对SQL语句进行预编译
+   */
   PREPARED,
 
+  /**
+   * 存储过程
+   */
   CALLABLE
 
 }

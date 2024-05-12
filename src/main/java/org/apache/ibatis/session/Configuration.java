@@ -714,22 +714,25 @@ public class Configuration {
     return MetaObject.forObject(object, objectFactory, objectWrapperFactory, reflectorFactory);
   }
 
-  public ParameterHandler newParameterHandler(MappedStatement mappedStatement, Object parameterObject,BoundSql boundSql) {
+  public ParameterHandler newParameterHandler(MappedStatement mappedStatement, Object parameterObject,
+      BoundSql boundSql) {
     // 创建一个parameterHandler
-    ParameterHandler parameterHandler = mappedStatement.getLang().createParameterHandler(mappedStatement,parameterObject, boundSql);
+    ParameterHandler parameterHandler = mappedStatement.getLang().createParameterHandler(mappedStatement,
+        parameterObject, boundSql);
     return (ParameterHandler) interceptorChain.pluginAll(parameterHandler);
   }
 
   public ResultSetHandler newResultSetHandler(Executor executor, MappedStatement mappedStatement, RowBounds rowBounds,
       ParameterHandler parameterHandler, ResultHandler resultHandler, BoundSql boundSql) {
     // 创建一个resultSetHandler
-    ResultSetHandler resultSetHandler = new DefaultResultSetHandler(executor, mappedStatement, parameterHandler,resultHandler, boundSql, rowBounds);
+    ResultSetHandler resultSetHandler = new DefaultResultSetHandler(executor, mappedStatement, parameterHandler,
+        resultHandler, boundSql, rowBounds);
     return (ResultSetHandler) interceptorChain.pluginAll(resultSetHandler);
   }
 
   public StatementHandler newStatementHandler(Executor executor, MappedStatement mappedStatement,
       Object parameterObject, RowBounds rowBounds, ResultHandler resultHandler, BoundSql boundSql) {
-    // 创建一个statementHandler
+    // 创建一个statementHandler，会同时 创建 参数处理器 和 结果处理器
     StatementHandler statementHandler = new RoutingStatementHandler(executor, mappedStatement, parameterObject,
         rowBounds, resultHandler, boundSql);
     // 织入插件逻辑,返回代理对象

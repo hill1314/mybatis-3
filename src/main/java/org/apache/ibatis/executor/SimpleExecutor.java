@@ -1,5 +1,5 @@
 /*
- *    Copyright 2009-2023 the original author or authors.
+ *    Copyright 2009-2024 the original author or authors.
  *
  *    Licensed under the Apache License, Version 2.0 (the "License");
  *    you may not use this file except in compliance with the License.
@@ -35,6 +35,7 @@ import org.apache.ibatis.transaction.Transaction;
  * 简单执行人
  *
  * @author Clinton Begin
+ *
  * @date 2024/05/10
  */
 public class SimpleExecutor extends BaseExecutor {
@@ -59,14 +60,34 @@ public class SimpleExecutor extends BaseExecutor {
     }
   }
 
+  /**
+   * 执行查询
+   *
+   * @param ms
+   * @param parameter
+   *          参数
+   * @param rowBounds
+   *          行边界
+   * @param resultHandler
+   *          结果处理程序
+   * @param boundSql
+   *          绑定sql
+   *
+   * @return {@link List}<{@link E}>
+   *
+   * @throws SQLException
+   *           SQLException
+   */
   @Override
   public <E> List<E> doQuery(MappedStatement ms, Object parameter, RowBounds rowBounds, ResultHandler resultHandler,
       BoundSql boundSql) throws SQLException {
     Statement stmt = null;
     try {
       Configuration configuration = ms.getConfiguration();
+      // 创建StatementHandler
       StatementHandler handler = configuration.newStatementHandler(wrapper, ms, parameter, rowBounds, resultHandler,
           boundSql);
+      // 创建一个Statement
       stmt = prepareStatement(handler, ms.getStatementLog());
       // 执行查询操作
       return handler.query(stmt, resultHandler);
@@ -94,17 +115,23 @@ public class SimpleExecutor extends BaseExecutor {
   /**
    * 准备
    *
-   * @param handler      处理程序
-   * @param statementLog 语句日志
+   * @param handler
+   *          处理程序
+   * @param statementLog
+   *          语句日志
+   *
    * @return {@link Statement}
-   * @throws SQLException SQLException
+   *
+   * @throws SQLException
+   *           SQLException
    */
   private Statement prepareStatement(StatementHandler handler, Log statementLog) throws SQLException {
     Statement stmt;
     // 创建链接
     Connection connection = getConnection(statementLog);
+    // 创建Statement
     stmt = handler.prepare(connection, transaction.getTimeout());
-    //设置参数
+    // 设置参数
     handler.parameterize(stmt);
     return stmt;
   }

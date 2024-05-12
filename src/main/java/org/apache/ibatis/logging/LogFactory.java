@@ -30,9 +30,15 @@ public final class LogFactory {
   public static final String MARKER = "MYBATIS";
 
   private static final ReentrantLock lock = new ReentrantLock();
+  /**
+   * 日志构造函数
+   */
   private static Constructor<? extends Log> logConstructor;
 
   static {
+    // 初始化日志工厂
+    // 在用户没有指定日志实现、或 指定的日志实现加载异常的情况下，使用下面的优先级 来创建日志实现
+    // 优先级 从上到下，找到第一个可以成功加载的日志实现类，成功后 后面的不再加载
     tryImplementation(LogFactory::useSlf4jLogging);
     tryImplementation(LogFactory::useCommonsLogging);
     tryImplementation(LogFactory::useLog4J2Logging);
@@ -57,6 +63,12 @@ public final class LogFactory {
     }
   }
 
+  /**
+   * 使用指定的日志实现
+   *
+   * @param clazz
+   *          拍手
+   */
   public static void useCustomLogging(Class<? extends Log> clazz) {
     setImplementation(clazz);
   }
@@ -94,21 +106,30 @@ public final class LogFactory {
   }
 
   private static void tryImplementation(Runnable runnable) {
+    // logConstructor 为空 才进行加载
     if (logConstructor == null) {
       try {
         runnable.run();
       } catch (Throwable t) {
         // ignore
+        // 加载失败了，没关系，继续下一个
       }
     }
   }
 
+  /**
+   * 设置日志接口实现
+   *
+   * @param implClass
+   *          实现类班
+   */
   private static void setImplementation(Class<? extends Log> implClass) {
     lock.lock();
     try {
       Constructor<? extends Log> candidate = implClass.getConstructor(String.class);
       Log log = candidate.newInstance(LogFactory.class.getName());
       if (log.isDebugEnabled()) {
+        // 打印 具体实现类
         log.debug("Logging initialized using '" + implClass + "' adapter.");
       }
       logConstructor = candidate;

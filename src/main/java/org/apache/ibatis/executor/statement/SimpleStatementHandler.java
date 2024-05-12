@@ -1,5 +1,5 @@
 /*
- *    Copyright 2009-2023 the original author or authors.
+ *    Copyright 2009-2024 the original author or authors.
  *
  *    Licensed under the Apache License, Version 2.0 (the "License");
  *    you may not use this file except in compliance with the License.
@@ -37,6 +37,22 @@ import org.apache.ibatis.session.RowBounds;
  */
 public class SimpleStatementHandler extends BaseStatementHandler {
 
+  /**
+   * 简单语句处理程序
+   *
+   * @param executor
+   *          遗嘱执行人
+   * @param mappedStatement
+   *          映射语句
+   * @param parameter
+   *          参数
+   * @param rowBounds
+   *          行边界
+   * @param resultHandler
+   *          结果处理程序
+   * @param boundSql
+   *          绑定sql
+   */
   public SimpleStatementHandler(Executor executor, MappedStatement mappedStatement, Object parameter,
       RowBounds rowBounds, ResultHandler resultHandler, BoundSql boundSql) {
     super(executor, mappedStatement, parameter, rowBounds, resultHandler, boundSql);
@@ -83,11 +99,23 @@ public class SimpleStatementHandler extends BaseStatementHandler {
     return resultSetHandler.handleCursorResultSets(statement);
   }
 
+  /**
+   * 实例化语句
+   *
+   * @param connection
+   *          联系
+   *
+   * @return {@link Statement}
+   *
+   * @throws SQLException
+   *           SQLException
+   */
   @Override
   protected Statement instantiateStatement(Connection connection) throws SQLException {
     if (mappedStatement.getResultSetType() == ResultSetType.DEFAULT) {
       return connection.createStatement();
     }
+    // 通过具体的数据库驱动程序 创建 statement
     return connection.createStatement(mappedStatement.getResultSetType().getValue(), ResultSet.CONCUR_READ_ONLY);
   }
 

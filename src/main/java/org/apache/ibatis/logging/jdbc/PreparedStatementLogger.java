@@ -53,11 +53,13 @@ public final class PreparedStatementLogger extends BaseJdbcLogger implements Inv
         clearColumnInfo();
         if ("executeQuery".equals(method.getName())) {
           ResultSet rs = (ResultSet) method.invoke(statement, params);
+          //返回ResultSet 的日志代理对象
           return rs == null ? null : ResultSetLogger.newInstance(rs, statementLog, queryStack);
         } else {
           return method.invoke(statement, params);
         }
       }
+
       if (SET_METHODS.contains(method.getName())) {
         if ("setNull".equals(method.getName())) {
           setColumn(params[0], null);
@@ -65,9 +67,11 @@ public final class PreparedStatementLogger extends BaseJdbcLogger implements Inv
           setColumn(params[0], params[1]);
         }
         return method.invoke(statement, params);
+
       } else if ("getResultSet".equals(method.getName())) {
         ResultSet rs = (ResultSet) method.invoke(statement, params);
         return rs == null ? null : ResultSetLogger.newInstance(rs, statementLog, queryStack);
+
       } else if ("getUpdateCount".equals(method.getName())) {
         int updateCount = (Integer) method.invoke(statement, params);
         if (updateCount != -1) {

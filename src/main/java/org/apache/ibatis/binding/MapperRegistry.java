@@ -1,5 +1,5 @@
 /*
- *    Copyright 2009-2023 the original author or authors.
+ *    Copyright 2009-2024 the original author or authors.
  *
  *    Licensed under the Apache License, Version 2.0 (the "License");
  *    you may not use this file except in compliance with the License.
@@ -30,6 +30,7 @@ import org.apache.ibatis.session.SqlSession;
  * 映射器注册表
  *
  * @author Clinton Begin
+ *
  * @date 2024/05/09
  */
 public class MapperRegistry {
@@ -37,6 +38,7 @@ public class MapperRegistry {
   private final Configuration config;
   /**
    * 已知映射器
+   * Mapper接口 和 MapperProxyFactory 的映射关系
    */
   private final Map<Class<?>, MapperProxyFactory<?>> knownMappers = new ConcurrentHashMap<>();
 
@@ -47,19 +49,22 @@ public class MapperRegistry {
   /**
    * 获取Mapper
    *
-   * @param type       类型
-   * @param sqlSession sql会话
+   * @param type
+   *          类型
+   * @param sqlSession
+   *          sql会话
+   *
    * @return {@link T}
    */
   @SuppressWarnings("unchecked")
   public <T> T getMapper(Class<T> type, SqlSession sqlSession) {
-    //根据类型 获取 mapperProxyFactory
+    // 根据类型 获取 mapperProxyFactory
     final MapperProxyFactory<T> mapperProxyFactory = (MapperProxyFactory<T>) knownMappers.get(type);
     if (mapperProxyFactory == null) {
       throw new BindingException("Type " + type + " is not known to the MapperRegistry.");
     }
     try {
-      //通过代理工厂创建实例
+      // 通过代理工厂创建实例
       return mapperProxyFactory.newInstance(sqlSession);
     } catch (Exception e) {
       throw new BindingException("Error getting mapper instance. Cause: " + e, e);

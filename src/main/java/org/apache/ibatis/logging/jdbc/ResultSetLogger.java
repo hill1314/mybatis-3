@@ -34,6 +34,7 @@ import org.apache.ibatis.reflection.ExceptionUtil;
  *
  * @author Clinton Begin
  * @author Eduardo Macarron
+ * @date 2024/05/12
  */
 public final class ResultSetLogger extends BaseJdbcLogger implements InvocationHandler {
 
@@ -74,8 +75,10 @@ public final class ResultSetLogger extends BaseJdbcLogger implements InvocationH
             final int columnCount = rsmd.getColumnCount();
             if (first) {
               first = false;
+              //打印列名
               printColumnHeaders(rsmd, columnCount);
             }
+            //打印列值
             printColumnValues(columnCount);
           }
         } else {
@@ -100,6 +103,11 @@ public final class ResultSetLogger extends BaseJdbcLogger implements InvocationH
     trace(row.toString(), false);
   }
 
+  /**
+   * 打印列值
+   *
+   * @param columnCount 列计数
+   */
   private void printColumnValues(int columnCount) {
     StringJoiner row = new StringJoiner(", ", "       Row: ", "");
     for (int i = 1; i <= columnCount; i++) {

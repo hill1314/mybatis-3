@@ -1,5 +1,5 @@
 /*
- *    Copyright 2009-2023 the original author or authors.
+ *    Copyright 2009-2024 the original author or authors.
  *
  *    Licensed under the Apache License, Version 2.0 (the "License");
  *    you may not use this file except in compliance with the License.
@@ -35,6 +35,7 @@ import org.apache.ibatis.util.MapUtil;
  *
  * @author Clinton Begin
  * @author Eduardo Macarron
+ *
  * @date 2024/05/10
  */
 public class MapperProxy<T> implements InvocationHandler, Serializable {
@@ -88,14 +89,17 @@ public class MapperProxy<T> implements InvocationHandler, Serializable {
   @Override
   public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
     try {
-      //toString\hashCode\equals 等方法不需要执行SQL流程
+      // toString\hashCode\equals 等 Object继承的方法不需要执行SQL流程
       if (Object.class.equals(method.getDeclaringClass())) {
         return method.invoke(this, args);
       }
-      //PlainMethodInvoker or DefaultMethodInvoker
+
+      // PlainMethodInvoker or DefaultMethodInvoker
       MapperMethodInvoker invoker = cachedInvoker(method);
-      //通过用的是 PlainMethodInvoker实现
+
+      // 通常用的是 PlainMethodInvoker实现
       return invoker.invoke(proxy, method, args, sqlSession);
+
     } catch (Throwable t) {
       throw ExceptionUtil.unwrapThrowable(t);
     }
@@ -145,6 +149,7 @@ public class MapperProxy<T> implements InvocationHandler, Serializable {
    * 普通方法调用程序
    *
    * @author huleilei9
+   *
    * @date 2024/05/10
    */
   private static class PlainMethodInvoker implements MapperMethodInvoker {
@@ -164,6 +169,7 @@ public class MapperProxy<T> implements InvocationHandler, Serializable {
    * 默认方法调用程序
    *
    * @author huleilei9
+   *
    * @date 2024/05/10
    */
   private static class DefaultMethodInvoker implements MapperMethodInvoker {

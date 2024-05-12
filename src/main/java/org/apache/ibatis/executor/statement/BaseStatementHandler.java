@@ -1,5 +1,5 @@
 /*
- *    Copyright 2009-2023 the original author or authors.
+ *    Copyright 2009-2024 the original author or authors.
  *
  *    Licensed under the Apache License, Version 2.0 (the "License");
  *    you may not use this file except in compliance with the License.
@@ -37,6 +37,7 @@ import org.apache.ibatis.type.TypeHandlerRegistry;
  * 基础陈述处理程序
  *
  * @author Clinton Begin
+ *
  * @date 2024/05/11
  */
 public abstract class BaseStatementHandler implements StatementHandler {
@@ -53,6 +54,22 @@ public abstract class BaseStatementHandler implements StatementHandler {
 
   protected BoundSql boundSql;
 
+  /**
+   * 基础陈述处理程序
+   *
+   * @param executor
+   *          遗嘱执行人
+   * @param mappedStatement
+   *          映射语句
+   * @param parameterObject
+   *          参数对象
+   * @param rowBounds
+   *          行边界
+   * @param resultHandler
+   *          结果处理程序
+   * @param boundSql
+   *          绑定sql
+   */
   protected BaseStatementHandler(Executor executor, MappedStatement mappedStatement, Object parameterObject,
       RowBounds rowBounds, ResultHandler resultHandler, BoundSql boundSql) {
     this.configuration = mappedStatement.getConfiguration();
@@ -90,10 +107,15 @@ public abstract class BaseStatementHandler implements StatementHandler {
   /**
    * 准备
    *
-   * @param connection         联系
-   * @param transactionTimeout 事务超时
+   * @param connection
+   *          联系
+   * @param transactionTimeout
+   *          事务超时
+   *
    * @return {@link Statement}
-   * @throws SQLException SQLException
+   *
+   * @throws SQLException
+   *           SQLException
    */
   @Override
   public Statement prepare(Connection connection, Integer transactionTimeout) throws SQLException {

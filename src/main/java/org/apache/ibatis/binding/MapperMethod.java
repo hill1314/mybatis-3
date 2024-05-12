@@ -1,5 +1,5 @@
 /*
- *    Copyright 2009-2023 the original author or authors.
+ *    Copyright 2009-2024 the original author or authors.
  *
  *    Licensed under the Apache License, Version 2.0 (the "License");
  *    you may not use this file except in compliance with the License.
@@ -39,14 +39,23 @@ import org.apache.ibatis.session.RowBounds;
 import org.apache.ibatis.session.SqlSession;
 
 /**
+ * Mapper方法执行的代理方法实现
+ *
  * @author Clinton Begin
  * @author Eduardo Macarron
  * @author Lasse Voss
  * @author Kazuki Shimizu
+ * @date 2024/05/12
  */
 public class MapperMethod {
 
+  /**
+   * sql命令
+   */
   private final SqlCommand command;
+  /**
+   * 方法
+   */
   private final MethodSignature method;
 
   public MapperMethod(Class<?> mapperInterface, Method method, Configuration config) {
@@ -57,13 +66,16 @@ public class MapperMethod {
   /**
    * 执行
    *
-   * @param sqlSession sql会话
-   * @param args       args
+   * @param sqlSession
+   *          sql会话
+   * @param args
+   *          args
+   *
    * @return {@link Object}
    */
   public Object execute(SqlSession sqlSession, Object[] args) {
     Object result;
-    //实际调的也是 DefaultSqlSession
+    // 实际调的也是 DefaultSqlSession
     switch (command.getType()) {
       case INSERT: {
         Object param = method.convertArgsToSqlCommandParam(args);
@@ -81,7 +93,7 @@ public class MapperMethod {
         break;
       }
       case SELECT:
-        //根据返回类型 分别处理
+        // 根据返回类型 分别处理
         if (method.returnsVoid() && method.hasResultHandler()) {
           executeWithResultHandler(sqlSession, args);
           result = null;
@@ -115,7 +127,9 @@ public class MapperMethod {
   /**
    * 行计数结果
    *
-   * @param rowCount 行计数
+   * @param rowCount
+   *          行计数
+   *
    * @return {@link Object}
    */
   private Object rowCountResult(int rowCount) {
@@ -319,7 +333,9 @@ public class MapperMethod {
     /**
      * 类型转换args到sql命令参数
      *
-     * @param args args
+     * @param args
+     *          args
+     *
      * @return {@link Object}
      */
     public Object convertArgsToSqlCommandParam(Object[] args) {

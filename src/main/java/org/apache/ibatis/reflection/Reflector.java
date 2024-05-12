@@ -1,5 +1,5 @@
 /*
- *    Copyright 2009-2023 the original author or authors.
+ *    Copyright 2009-2024 the original author or authors.
  *
  *    Licensed under the Apache License, Version 2.0 (the "License");
  *    you may not use this file except in compliance with the License.
@@ -30,7 +30,6 @@ import java.lang.reflect.Type;
 import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
@@ -47,12 +46,10 @@ import org.apache.ibatis.util.MapUtil;
 
 /**
  * This class represents a cached set of class definition information that allows for easy mapping between property
- * names and getter/setter methods.
- *
- * 这个类表示一组缓存的类定义信息，允许在属性之间轻松映射名称和gettersetter方法。
- * 一个Reflector对象 对应一个java类
+ * names and getter/setter methods. 这个类表示一组缓存的类定义信息，允许在属性之间轻松映射名称和gettersetter方法。 一个Reflector对象 对应一个java类
  *
  * @author Clinton Begin
+ *
  * @date 2024/05/12
  */
 public class Reflector {
@@ -93,7 +90,8 @@ public class Reflector {
   /**
    * 反射器
    *
-   * @param clazz 拍手
+   * @param clazz
+   *          拍手
    */
   public Reflector(Class<?> clazz) {
     type = clazz;
@@ -319,12 +317,12 @@ public class Reflector {
     Map<String, Method> uniqueMethods = new HashMap<>();
     Class<?> currentClass = clazz;
     while (currentClass != null && currentClass != Object.class) {
-      //添加自身的方法
+      // 添加自身的方法
       addUniqueMethods(uniqueMethods, currentClass.getDeclaredMethods());
 
       // we also need to look for interface methods -
       // because the class may be abstract
-      //添加实现的接口的方法
+      // 添加实现的接口的方法
       Class<?>[] interfaces = currentClass.getInterfaces();
       for (Class<?> anInterface : interfaces) {
         addUniqueMethods(uniqueMethods, anInterface.getMethods());
@@ -339,8 +337,10 @@ public class Reflector {
   /**
    * 添加独特方法
    *
-   * @param uniqueMethods 独特方法
-   * @param methods       方法
+   * @param uniqueMethods
+   *          独特方法
+   * @param methods
+   *          方法
    */
   private void addUniqueMethods(Map<String, Method> uniqueMethods, Method[] methods) {
     for (Method currentMethod : methods) {
@@ -357,7 +357,7 @@ public class Reflector {
   }
 
   private String getSignature(Method method) {
-    //返回类型+方法名+参数类型
+    // 返回类型+方法名+参数类型
     StringBuilder sb = new StringBuilder();
     Class<?> returnType = method.getReturnType();
     sb.append(returnType.getName()).append('#');

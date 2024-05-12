@@ -1,5 +1,5 @@
 /*
- *    Copyright 2009-2023 the original author or authors.
+ *    Copyright 2009-2024 the original author or authors.
  *
  *    Licensed under the Apache License, Version 2.0 (the "License");
  *    you may not use this file except in compliance with the License.
@@ -44,8 +44,11 @@ public class Plugin implements InvocationHandler {
   /**
    * 创建插件代理对象 包装原对象
    *
-   * @param target      目标
-   * @param interceptor 拦截器
+   * @param target
+   *          目标
+   * @param interceptor
+   *          拦截器
+   *
    * @return {@link Object}
    */
   public static Object wrap(Object target, Interceptor interceptor) {

@@ -1,5 +1,5 @@
 /*
- *    Copyright 2009-2022 the original author or authors.
+ *    Copyright 2009-2024 the original author or authors.
  *
  *    Licensed under the Apache License, Version 2.0 (the "License");
  *    you may not use this file except in compliance with the License.
@@ -23,6 +23,7 @@ import java.util.List;
  * 拦截器链
  *
  * @author Clinton Begin
+ *
  * @date 2024/05/10
  */
 public class InterceptorChain {
@@ -31,7 +32,7 @@ public class InterceptorChain {
 
   public Object pluginAll(Object target) {
     for (Interceptor interceptor : interceptors) {
-      //每个拦截器都会包装一下 执行器对象
+      // 每个拦截器都会包装一下 执行器对象
       target = interceptor.plugin(target);
     }
     return target;

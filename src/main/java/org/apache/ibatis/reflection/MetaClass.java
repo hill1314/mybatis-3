@@ -1,5 +1,5 @@
 /*
- *    Copyright 2009-2023 the original author or authors.
+ *    Copyright 2009-2024 the original author or authors.
  *
  *    Licensed under the Apache License, Version 2.0 (the "License");
  *    you may not use this file except in compliance with the License.
@@ -27,10 +27,10 @@ import org.apache.ibatis.reflection.invoker.MethodInvoker;
 import org.apache.ibatis.reflection.property.PropertyTokenizer;
 
 /**
- * 元类
- * 用于对复杂属性表达式的解析
+ * 元类 用于对复杂属性表达式的解析
  *
  * @author Clinton Begin
+ *
  * @date 2024/05/12
  */
 public class MetaClass {
@@ -169,9 +169,9 @@ public class MetaClass {
   }
 
   private StringBuilder buildProperty(String name, StringBuilder builder) {
-    //解析表达式，类似：orders[0].items[0].name
+    // 解析表达式，类似：orders[0].items[0].name
     PropertyTokenizer prop = new PropertyTokenizer(name);
-    //子表达式
+    // 子表达式
     if (prop.hasNext()) {
       String propertyName = reflector.findPropertyName(prop.getName());
       if (propertyName != null) {

@@ -1,5 +1,5 @@
 /*
- *    Copyright 2009-2022 the original author or authors.
+ *    Copyright 2009-2024 the original author or authors.
  *
  *    Licensed under the Apache License, Version 2.0 (the "License");
  *    you may not use this file except in compliance with the License.
@@ -16,7 +16,11 @@
 package org.apache.ibatis.executor;
 
 /**
+ * 执行占位符
+ *
  * @author Clinton Begin
+ *
+ * @date 2024/05/12
  */
 public enum ExecutionPlaceholder {
   EXECUTION_PLACEHOLDER

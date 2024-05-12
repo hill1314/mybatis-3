@@ -27,9 +27,11 @@ import org.apache.ibatis.reflection.ExceptionUtil;
 
 /**
  * Connection proxy to add logging.
+ * 数据库链接 日志代理
  *
  * @author Clinton Begin
  * @author Eduardo Macarron
+ * @date 2024/05/12
  */
 public final class ConnectionLogger extends BaseJdbcLogger implements InvocationHandler {
 
@@ -40,23 +42,39 @@ public final class ConnectionLogger extends BaseJdbcLogger implements Invocation
     this.connection = conn;
   }
 
+  /**
+   * 反射执行代理对象的方法
+   *
+   * @param proxy  代理
+   * @param method 方法
+   * @param params params
+   * @return {@link Object}
+   * @throws Throwable 可丢弃
+   */
   @Override
   public Object invoke(Object proxy, Method method, Object[] params) throws Throwable {
     try {
+      //如果是Object 继承来的方法，不用处理
       if (Object.class.equals(method.getDeclaringClass())) {
         return method.invoke(this, params);
       }
+
       if ("prepareStatement".equals(method.getName()) || "prepareCall".equals(method.getName())) {
         if (isDebugEnabled()) {
           debug(" Preparing: " + removeExtraWhitespace((String) params[0]), true);
         }
         PreparedStatement stmt = (PreparedStatement) method.invoke(connection, params);
+
+        //返回的是 PreparedStatement 的日志代理对象
         return PreparedStatementLogger.newInstance(stmt, statementLog, queryStack);
       }
+
       if ("createStatement".equals(method.getName())) {
         Statement stmt = (Statement) method.invoke(connection, params);
+        //返回的是 Statement 的日志代理对象
         return StatementLogger.newInstance(stmt, statementLog, queryStack);
       }
+
       return method.invoke(connection, params);
     } catch (Throwable t) {
       throw ExceptionUtil.unwrapThrowable(t);

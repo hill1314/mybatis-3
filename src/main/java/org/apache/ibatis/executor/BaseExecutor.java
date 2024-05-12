@@ -1,5 +1,5 @@
 /*
- *    Copyright 2009-2023 the original author or authors.
+ *    Copyright 2009-2024 the original author or authors.
  *
  *    Licensed under the Apache License, Version 2.0 (the "License");
  *    you may not use this file except in compliance with the License.
@@ -48,6 +48,7 @@ import org.apache.ibatis.type.TypeHandlerRegistry;
  * 基本执行器
  *
  * @author Clinton Begin
+ *
  * @date 2024/05/11
  */
 public abstract class BaseExecutor implements Executor {
@@ -61,8 +62,15 @@ public abstract class BaseExecutor implements Executor {
   protected Executor wrapper;
 
   protected ConcurrentLinkedQueue<DeferredLoad> deferredLoads;
+  /**
+   * 本地缓存
+   */
   protected PerpetualCache localCache;
+  /**
+   * 本地输出参数缓存
+   */
   protected PerpetualCache localOutputParameterCache;
+
   protected Configuration configuration;
 
   protected int queryStack;
@@ -119,7 +127,7 @@ public abstract class BaseExecutor implements Executor {
     if (closed) {
       throw new ExecutorException("Executor was closed.");
     }
-    //一级缓存
+    // 一级缓存
     clearLocalCache();
     return doUpdate(ms, parameter);
   }
@@ -140,11 +148,17 @@ public abstract class BaseExecutor implements Executor {
    * 查询
    *
    * @param ms
-   * @param parameter     参数
-   * @param rowBounds     行边界
-   * @param resultHandler 结果处理程序
+   * @param parameter
+   *          参数
+   * @param rowBounds
+   *          行边界
+   * @param resultHandler
+   *          结果处理程序
+   *
    * @return {@link List }<{@link E }>
-   * @throws SQLException SQLException
+   *
+   * @throws SQLException
+   *           SQLException
    */
   @Override
   public <E> List<E> query(MappedStatement ms, Object parameter, RowBounds rowBounds, ResultHandler resultHandler)
@@ -158,13 +172,21 @@ public abstract class BaseExecutor implements Executor {
    * 查询
    *
    * @param ms
-   * @param parameter     参数
-   * @param rowBounds     行边界
-   * @param resultHandler 结果处理程序
-   * @param key           key
-   * @param boundSql      绑定sql
+   * @param parameter
+   *          参数
+   * @param rowBounds
+   *          行边界
+   * @param resultHandler
+   *          结果处理程序
+   * @param key
+   *          key
+   * @param boundSql
+   *          绑定sql
+   *
    * @return {@link List }<{@link E }>
-   * @throws SQLException SQLException
+   *
+   * @throws SQLException
+   *           SQLException
    */
   @SuppressWarnings("unchecked")
   @Override
@@ -175,12 +197,14 @@ public abstract class BaseExecutor implements Executor {
       throw new ExecutorException("Executor was closed.");
     }
     if (queryStack == 0 && ms.isFlushCacheRequired()) {
+      // 清楚本地缓存
       clearLocalCache();
     }
 
     List<E> list;
     try {
       queryStack++;
+      // 先从缓存获取
       list = resultHandler == null ? (List<E>) localCache.getObject(key) : null;
       if (list != null) {
         handleLocallyCachedOutputParameters(ms, key, parameter, boundSql);
@@ -210,6 +234,20 @@ public abstract class BaseExecutor implements Executor {
     return doQueryCursor(ms, parameter, rowBounds, boundSql);
   }
 
+  /**
+   * 延迟加载
+   *
+   * @param ms
+   *          太太
+   * @param resultObject
+   *          结果对象
+   * @param property
+   *          所有物
+   * @param key
+   *          Key
+   * @param targetType
+   *          目标类型
+   */
   @Override
   public void deferLoad(MappedStatement ms, MetaObject resultObject, String property, CacheKey key,
       Class<?> targetType) {
@@ -332,14 +370,26 @@ public abstract class BaseExecutor implements Executor {
    * @throws SQLException
    *           if a database access error occurs, this method is called on a closed <code>Statement</code>
    *
-   * @since 3.4.0
-   *
    * @see StatementUtil#applyTransactionTimeout(Statement, Integer, Integer)
+   *
+   * @since 3.4.0
    */
   protected void applyTransactionTimeout(Statement statement) throws SQLException {
     StatementUtil.applyTransactionTimeout(statement, statement.getQueryTimeout(), transaction.getTimeout());
   }
 
+  /**
+   * 处理本地缓存输出参数
+   *
+   * @param ms
+   *          太太
+   * @param key
+   *          Key
+   * @param parameter
+   *          参数
+   * @param boundSql
+   *          绑定sql
+   */
   private void handleLocallyCachedOutputParameters(MappedStatement ms, CacheKey key, Object parameter,
       BoundSql boundSql) {
     if (ms.getStatementType() == StatementType.CALLABLE) {
@@ -358,24 +408,58 @@ public abstract class BaseExecutor implements Executor {
     }
   }
 
+  /**
+   * 从数据库查询
+   *
+   * @param ms
+   *          太太
+   * @param parameter
+   *          参数
+   * @param rowBounds
+   *          行边界
+   * @param resultHandler
+   *          结果处理程序
+   * @param key
+   *          Key
+   * @param boundSql
+   *          绑定sql
+   *
+   * @return {@link List}<{@link E}>
+   *
+   * @throws SQLException
+   *           SQLException
+   */
   private <E> List<E> queryFromDatabase(MappedStatement ms, Object parameter, RowBounds rowBounds,
       ResultHandler resultHandler, CacheKey key, BoundSql boundSql) throws SQLException {
     List<E> list;
+    // 缓存中先设置 占位符
     localCache.putObject(key, EXECUTION_PLACEHOLDER);
     try {
       list = doQuery(ms, parameter, rowBounds, resultHandler, boundSql);
     } finally {
       localCache.removeObject(key);
     }
+    // 设置真正的缓存结果（一级缓存）
     localCache.putObject(key, list);
+
+    // 存储过程
     if (ms.getStatementType() == StatementType.CALLABLE) {
       localOutputParameterCache.putObject(key, parameter);
     }
     return list;
   }
 
+  /**
+   * 获取 数据库链接
+   *
+   * @param statementLog 语句日志
+   * @return {@link Connection}
+   * @throws SQLException SQLException
+   */
   protected Connection getConnection(Log statementLog) throws SQLException {
     Connection connection = transaction.getConnection();
+
+    //如果日志级别是debug，返回 连接日志代理对象
     if (statementLog.isDebugEnabled()) {
       return ConnectionLogger.newInstance(connection, statementLog, queryStack);
     }
@@ -409,6 +493,11 @@ public abstract class BaseExecutor implements Executor {
       this.targetType = targetType;
     }
 
+    /**
+     * 是否可以加载缓存
+     *
+     * @return boolean
+     */
     public boolean canLoad() {
       return localCache.getObject(key) != null && localCache.getObject(key) != EXECUTION_PLACEHOLDER;
     }

@@ -1,5 +1,5 @@
 /*
- *    Copyright 2009-2023 the original author or authors.
+ *    Copyright 2009-2024 the original author or authors.
  *
  *    Licensed under the Apache License, Version 2.0 (the "License");
  *    you may not use this file except in compliance with the License.
@@ -36,10 +36,27 @@ import org.apache.ibatis.session.RowBounds;
  * 准备语句处理程序
  *
  * @author Clinton Begin
+ *
  * @date 2024/05/11
  */
 public class PreparedStatementHandler extends BaseStatementHandler {
 
+  /**
+   * 预编译语句处理程序
+   *
+   * @param executor
+   *          遗嘱执行人
+   * @param mappedStatement
+   *          映射语句
+   * @param parameter
+   *          参数
+   * @param rowBounds
+   *          行边界
+   * @param resultHandler
+   *          结果处理程序
+   * @param boundSql
+   *          绑定sql
+   */
   public PreparedStatementHandler(Executor executor, MappedStatement mappedStatement, Object parameter,
       RowBounds rowBounds, ResultHandler resultHandler, BoundSql boundSql) {
     super(executor, mappedStatement, parameter, rowBounds, resultHandler, boundSql);
@@ -66,7 +83,7 @@ public class PreparedStatementHandler extends BaseStatementHandler {
   public <E> List<E> query(Statement statement, ResultHandler resultHandler) throws SQLException {
     PreparedStatement ps = (PreparedStatement) statement;
     ps.execute();
-    //执行结果处理
+    // 执行结果处理
     return resultSetHandler.handleResultSets(ps);
   }
 
@@ -80,9 +97,13 @@ public class PreparedStatementHandler extends BaseStatementHandler {
   /**
    * 实例化语句
    *
-   * @param connection 联系
+   * @param connection
+   *          联系
+   *
    * @return {@link Statement}
-   * @throws SQLException SQLException
+   *
+   * @throws SQLException
+   *           SQLException
    */
   @Override
   protected Statement instantiateStatement(Connection connection) throws SQLException {
