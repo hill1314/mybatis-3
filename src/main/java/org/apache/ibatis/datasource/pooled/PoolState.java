@@ -20,7 +20,10 @@ import java.util.List;
 import java.util.concurrent.locks.ReentrantLock;
 
 /**
+ * 池状态
+ *
  * @author Clinton Begin
+ * @date 2024/05/12
  */
 public class PoolState {
 
@@ -33,15 +36,45 @@ public class PoolState {
 
   protected PooledDataSource dataSource;
 
+  /**
+   * 空闲连接
+   */
   protected final List<PooledConnection> idleConnections = new ArrayList<>();
+  /**
+   * 活动连接
+   */
   protected final List<PooledConnection> activeConnections = new ArrayList<>();
+  /**
+   * 请求计数
+   */
   protected long requestCount;
+  /**
+   * 累计请求时间
+   */
   protected long accumulatedRequestTime;
+  /**
+   * 累计结账时间
+   */
   protected long accumulatedCheckoutTime;
+  /**
+   * 声称过期连接数
+   */
   protected long claimedOverdueConnectionCount;
+  /**
+   * 过期连接累计签出时间
+   */
   protected long accumulatedCheckoutTimeOfOverdueConnections;
+  /**
+   * 累计等待时间
+   */
   protected long accumulatedWaitTime;
+  /**
+   * 等待计数
+   */
   protected long hadToWaitCount;
+  /**
+   * 错误连接计数
+   */
   protected long badConnectionCount;
 
   public PoolState(PooledDataSource dataSource) {

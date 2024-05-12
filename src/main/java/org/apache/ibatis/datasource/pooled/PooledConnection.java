@@ -24,7 +24,10 @@ import java.sql.SQLException;
 import org.apache.ibatis.reflection.ExceptionUtil;
 
 /**
+ * 池连接 代理对象
+ *
  * @author Clinton Begin
+ * @date 2024/05/12
  */
 class PooledConnection implements InvocationHandler {
 
@@ -33,7 +36,13 @@ class PooledConnection implements InvocationHandler {
 
   private final int hashCode;
   private final PooledDataSource dataSource;
+  /**
+   * 真实的连接
+   */
   private final Connection realConnection;
+  /**
+   * 代理连接
+   */
   private final Connection proxyConnection;
   private long checkoutTimestamp;
   private long createdTimestamp;
@@ -245,7 +254,9 @@ class PooledConnection implements InvocationHandler {
   @Override
   public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
     String methodName = method.getName();
+
     if (CLOSE.equals(methodName)) {
+      //关闭链接，将链接放回到连接池中
       dataSource.pushConnection(this);
       return null;
     }
@@ -255,6 +266,7 @@ class PooledConnection implements InvocationHandler {
         // throw an SQLException instead of a Runtime
         checkConnection();
       }
+      //调用真实的数据库链接 方法
       return method.invoke(realConnection, args);
     } catch (Throwable t) {
       throw ExceptionUtil.unwrapThrowable(t);

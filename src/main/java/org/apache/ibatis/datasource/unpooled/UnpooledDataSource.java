@@ -34,13 +34,19 @@ import org.apache.ibatis.io.Resources;
 import org.apache.ibatis.util.MapUtil;
 
 /**
+ * 无连接池的数据源
+ *
  * @author Clinton Begin
  * @author Eduardo Macarron
+ * @date 2024/05/12
  */
 public class UnpooledDataSource implements DataSource {
 
   private ClassLoader driverClassLoader;
   private Properties driverProperties;
+  /**
+   * 注册驱动缓存
+   */
   private static final Map<String, Driver> registeredDrivers = new ConcurrentHashMap<>();
 
   private String driver;
@@ -77,7 +83,7 @@ public class UnpooledDataSource implements DataSource {
   }
 
   public UnpooledDataSource(ClassLoader driverClassLoader, String driver, String url, String username,
-      String password) {
+                            String password) {
     this.driverClassLoader = driverClassLoader;
     this.driver = driver;
     this.url = url;
@@ -190,7 +196,6 @@ public class UnpooledDataSource implements DataSource {
    * Gets the default network timeout.
    *
    * @return the default network timeout
-   *
    * @since 3.5.2
    */
   public Integer getDefaultNetworkTimeout() {
@@ -201,9 +206,7 @@ public class UnpooledDataSource implements DataSource {
    * Sets the default network timeout value to wait for the database operation to complete. See
    * {@link Connection#setNetworkTimeout(java.util.concurrent.Executor, int)}
    *
-   * @param defaultNetworkTimeout
-   *          The time in milliseconds to wait for the database operation to complete.
-   *
+   * @param defaultNetworkTimeout The time in milliseconds to wait for the database operation to complete.
    * @since 3.5.2
    */
   public void setDefaultNetworkTimeout(Integer defaultNetworkTimeout) {
@@ -224,8 +227,17 @@ public class UnpooledDataSource implements DataSource {
     return doGetConnection(props);
   }
 
+  /**
+   * 获取数据库连接（每次创建一个新的）
+   *
+   * @param properties 特性
+   * @return {@link Connection}
+   * @throws SQLException SQLException
+   */
   private Connection doGetConnection(Properties properties) throws SQLException {
+    //初始化数据库驱动
     initializeDriver();
+    //获取数据库连接（每次获取新的）
     Connection connection = DriverManager.getConnection(url, properties);
     configureConnection(connection);
     return connection;
@@ -253,13 +265,22 @@ public class UnpooledDataSource implements DataSource {
     }
   }
 
+  /**
+   * 配置连接
+   *
+   * @param conn 康纳。
+   * @throws SQLException SQLException
+   */
   private void configureConnection(Connection conn) throws SQLException {
+    //连接超时时间
     if (defaultNetworkTimeout != null) {
       conn.setNetworkTimeout(Executors.newSingleThreadExecutor(), defaultNetworkTimeout);
     }
+    //是否自动提交
     if (autoCommit != null && autoCommit != conn.getAutoCommit()) {
       conn.setAutoCommit(autoCommit);
     }
+    //事务隔离级别
     if (defaultTransactionIsolationLevel != null) {
       conn.setTransactionIsolation(defaultTransactionIsolationLevel);
     }
