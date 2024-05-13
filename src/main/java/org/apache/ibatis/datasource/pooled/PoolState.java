@@ -53,7 +53,7 @@ public class PoolState {
    */
   protected long accumulatedRequestTime;
   /**
-   * 累计结账时间
+   * 累计检查时间
    */
   protected long accumulatedCheckoutTime;
   /**

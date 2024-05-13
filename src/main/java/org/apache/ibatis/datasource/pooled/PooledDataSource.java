@@ -61,7 +61,8 @@ public class PooledDataSource implements DataSource {
    */
   protected int poolMaximumIdleConnections = 5;
   /**
-   * 池最大检查时间
+   * 连接池内 连接 最大检查时间
+   * （mybatis 允许一个数据库连接存活的最长时间）
    */
   protected int poolMaximumCheckoutTime = 20000;
   /**
@@ -428,6 +429,7 @@ public class PooledDataSource implements DataSource {
 
     lock.lock();
     try {
+      //从活动连接中移除
       state.activeConnections.remove(conn);
 
       //判断是否有效
@@ -513,9 +515,10 @@ public class PooledDataSource implements DataSource {
           // Cannot create new connection
           //获取那个最早创建的连接
           PooledConnection oldestActiveConnection = state.activeConnections.get(0);
+          //从上次检查到现在 过去的时间
           long longestCheckoutTime = oldestActiveConnection.getCheckoutTime();
 
-          //判断最早连接连接是否超时
+          //判断这个最早的连接 是否超过了 配置的最长检出时间
           if (longestCheckoutTime > poolMaximumCheckoutTime) {
             // Can claim overdue connection
             state.claimedOverdueConnectionCount++;
@@ -526,7 +529,7 @@ public class PooledDataSource implements DataSource {
             //是不是自动提交的
             if (!oldestActiveConnection.getRealConnection().getAutoCommit()) {
               try {
-                //回滚
+                //非自动提交连接，进行回滚
                 oldestActiveConnection.getRealConnection().rollback();
               } catch (SQLException e) {
                 /*
